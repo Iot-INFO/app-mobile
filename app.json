@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "app-expo",
-    "slug": "app-expo",
-    "version": "1.0.0",
+    "name": "moobi-verde",
+    "slug": "moobi-verde",
+    "version": "0.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -17,13 +17,26 @@
       "**/*"
     ],
     "ios": {
+      "bundleIdentifier": "com.tomoove.moobiverde",
       "supportsTablet": true
     },
     "android": {
+      "package": "com.tomoove.moobiverde",
+      "enableDangerousExperimentalLeanBuilds": true,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyBv7PYOI-lImKiDx3D-1eEAUL-B15wS4Bw"
+        }
+      },
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_BACKGROUND_LOCATION"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
