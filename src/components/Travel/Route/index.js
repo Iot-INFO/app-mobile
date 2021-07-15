@@ -75,7 +75,7 @@ export default function RouteTravel({ route }) {
               '#238C23',
               '#7F0000'
             ]}
-            strokeWidth={6}
+            strokeWidth={4}
           />
         <Marker coordinate={points[points.length - 1]} />
       </MapView>

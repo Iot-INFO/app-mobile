@@ -14,8 +14,7 @@ import * as Location from 'expo-location';
 import { CommonActions, useNavigation } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
 import firebase from '../../../firebase_config';
-import { Stopwatch, Timer } from 'react-native-stopwatch-timer';
-import MapViewDirections from 'react-native-maps-directions';
+import { Stopwatch } from 'react-native-stopwatch-timer';
 import { Context } from '../../context';
 import api from '../../utils/api';
 import { useAuth } from '../../states/auth';
@@ -26,7 +25,7 @@ import Bike from '../../assets/imagens/bike_payment.png';
 const LOCATION_TASK_NAME = 'background-location-task';
 
 export default function Running(props) {
-  const { infoUser, running, setRunning } = useContext(Context);
+  const { infoUser, setRunning } = useContext(Context);
   const [isStopwatchStart, setIsStopwatchStart] = useState(true);
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
@@ -54,8 +53,6 @@ export default function Running(props) {
     let ponto_final_lat = 0.00;
     let ponto_final_long = 0.00;
     let id_user = user.id;
-
-    console.log(`DATA: ${d.getDate()}/${d.getUTCMonth() + 1}/${d.getFullYear()} ${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}`)
 
     await api.post('/corrida', {
       hora_inicial: hora_inicial,
@@ -120,11 +117,7 @@ export default function Running(props) {
 
     firebase.database().ref(id_bike).update({
       Bloqueado: true,
-    })
-
-    console.log('UPDATE CORRIDA REQUEST')
-
-    console.log(`ID CORRIDA: ${idCorrida}`)
+    });
 
     await api.put(`/corrida/update/${idCorrida}`, {
       hora_final: `${d.getDate()}/${d.getUTCMonth() + 1}/${d.getFullYear()} ${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}`,
@@ -135,8 +128,6 @@ export default function Running(props) {
         Authorization: `Bearer ${infoUser.token}`,
       }
     });
-
-    console.log('POINT REQUEST')
 
     markers.map(async (item) => {
       await api.post('/point', {
@@ -149,8 +140,6 @@ export default function Running(props) {
         }
       })
     });
-
-    console.log('LOGIN REQUEST')
 
     await api.put(`/user/update_cash/${user.id}`, {
       cash: user.cash - travelCost,
@@ -197,7 +186,6 @@ export default function Running(props) {
       const { locations } = data;
       setMarkers((result) => [...result, locations[0].coords]);
       setActualLocation(locations[0].coords);
-      console.log(`LOCATION NO TASK MANAGER: ${JSON.stringify(data.locations[0].coords)}`)
     }
   })
 
@@ -251,7 +239,7 @@ export default function Running(props) {
               '#238C23',
               '#7F0000'
             ]}
-            strokeWidth={6}
+            strokeWidth={4}
           />
         </MapView>
       </View>
