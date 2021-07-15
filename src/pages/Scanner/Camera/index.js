@@ -3,6 +3,7 @@ import { ActivityIndicator, Alert, View, Text, StyleSheet } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import { CommonActions, useNavigation } from '@react-navigation/native';
 import { Context } from '../../../context';
+import * as Crypto from 'expo-crypto';
 import api from '../../../utils/api';
 import firebase from '../../../../firebase_config';
 
