@@ -1,13 +1,16 @@
 import React from 'react';
 import { Feather, MaterialIcons } from '@expo/vector-icons';
 import { Image, View, Text, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
-import bike from '../../assets/imagens/bike_payment.png';
 import styles from './style';
 
 export default function Travel(props) {
   let date = props.travel.hora_inicial.split(" ")[0];
-  let hour = props.travel.hora_inicial.split(" ")[1];
+  let hour_inicial = props.travel.hora_inicial.split(" ")[1];
+  let hour_final = props.travel.hora_final.split(" ")[1];
+  
+  const navigation = useNavigation();
 
   return (
     <View style={styles.container}>
@@ -24,13 +27,22 @@ export default function Travel(props) {
           <View style={{ height: '10%' }} />
           <View style={styles.itemSectionInfoDate}>
             <Feather name="clock" size={20} color="#000" />
-            <Text style={{ marginLeft: 5 }}>{hour}</Text>
+            <Text style={{ marginLeft: 5 }}>
+              {`${hour_inicial.split(":")[0]}:${hour_inicial.split(":")[1]} - ${hour_final.split(":")[0]}:${hour_final.split(":")[1]}`}
+            </Text>
           </View>
         </View>
         
         <View style={styles.sectionDetails}>
-          <TouchableOpacity activeOpacity={0.6}>
-            <Text style={styles.textDetails}>Ver Detalhes</Text>
+          <TouchableOpacity 
+            activeOpacity={0.6}
+            onPress={() => {
+              navigation.navigate('RouteTravel', {
+                corrida: props.travel
+              })
+            }}
+          >
+            <Text style={styles.textDetails}>Ver Trajeto</Text>
           </TouchableOpacity>
         </View>
       </View>

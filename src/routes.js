@@ -21,6 +21,7 @@ import Payment from './pages/Payment';
 import Running from './pages/Running';
 import Contact from './pages/Contact';
 import About from './pages/About';
+import RouteTravel from './components/Travel/Route';
 
 const Drawer = createDrawerNavigator();
 const AppStack = createStackNavigator();
@@ -72,6 +73,7 @@ function InitialTabRoutes() {
       <AppStack.Screen name="Payment" component={Payment} />
       <AppStack.Screen name="Running" component={Running} />
       <AppStack.Screen name="Travels" component={Travels} />
+      <AppStack.Screen name="RouteTravel" component={RouteTravel} />
       <AppStack.Screen name="Contact" component={Contact} />
       <AppStack.Screen name="About" component={About} />
       <AppStack.Screen name="Scanner" component={Scanner} />

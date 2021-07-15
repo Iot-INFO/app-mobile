@@ -104,6 +104,7 @@ export default function Home() {
                   key={localidade.id}
                   label={localidade.name}
                   value={localidade}
+                  color="#68B92C"
                 />
               ))}
             </Picker>
