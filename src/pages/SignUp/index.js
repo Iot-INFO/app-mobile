@@ -68,7 +68,7 @@ export default function SignUp() {
         nome_completo: values.nome_completo,
         email: values.email,
         senha: values.password,
-        cash: 0.0,
+        cash: 30,
       });
 
       const responseLogin = await api.post('/login', {
