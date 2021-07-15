@@ -24,7 +24,6 @@ export default function Camera() {
 
   function handleBarCodeScanned({ type, data }) {
     setScanned(true);
-    console.log(`SCANNER: \nDATA: ${data}`);
     setId(data);
   }
 
@@ -33,8 +32,6 @@ export default function Camera() {
       let block = '';
       let charge = '';
       let id_base = '';
-
-      console.log(id);
 
       const user = infoUser.user[0];
 
@@ -46,14 +43,11 @@ export default function Camera() {
 
       id_base = response.data.bike.id_base;
 
-      console.log(`ID Base: ${id_base}`)
-
       firebase.database().ref(id).on('value', (snapshot) => {
         block = snapshot.val().Bloqueado;
         charge = snapshot.val().Carga;
 
         if (user.cash < 1) {
-          console.log('Primeiro if')
           Alert.alert(
             'Ops...',
             'Você não possui saldo suficiente para efetuar o aluguel',
@@ -74,8 +68,6 @@ export default function Camera() {
             ]
           );
         } else if (block == false) {
-          console.log('Segundo if')
-  
           Alert.alert(
             'Ops...',
             'A bicicleta atualmente está em uso',
@@ -96,8 +88,6 @@ export default function Camera() {
             ]
           );
         } else if (charge < 12) {
-          console.log('Terceiro if')
-  
           Alert.alert(
             'Ops...',
             'A bicicleta não pussui carga suficiente para realizar uma corrida',
@@ -128,7 +118,6 @@ export default function Camera() {
         }
       });
     } catch (error) {
-      console.log(`ERROR: ${error}`)
       Alert.alert('Ops...', 'Parece que houve um erro, tente novamente', [
         {
           text: 'OK',

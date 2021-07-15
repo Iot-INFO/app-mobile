@@ -25,7 +25,6 @@ export default function Travels() {
     let travels = data.corridas;
     setTravels(travels);
     setLoading(false);
-    console.log(`DATA: ${travels}`);
   }
 
   useEffect(() => {
