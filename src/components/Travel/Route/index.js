@@ -9,7 +9,6 @@ import styles from './style';
 export default function RouteTravel({ route }) {
   const { infoUser } = useContext(Context);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState(false);
   const [points, setPoints] = useState([]);
   const [markers, setMarkers] = useState([]);
 

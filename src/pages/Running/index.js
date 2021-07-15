@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
-import MapView, { Geojson, Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView, { Polyline, Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import * as TaskManager from 'expo-task-manager';
 import * as Location from 'expo-location';
 import { CommonActions, useNavigation } from '@react-navigation/native';
@@ -26,60 +26,131 @@ import Bike from '../../assets/imagens/bike_payment.png';
 const LOCATION_TASK_NAME = 'background-location-task';
 
 export default function Running(props) {
-  const { infoUser, setInfoUser, running, setRunning } = useContext(Context);
+  const { infoUser, running, setRunning } = useContext(Context);
   const [isStopwatchStart, setIsStopwatchStart] = useState(true);
-  const [destination, setDestination] = useState(null);
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
-  const { height, width } = Dimensions.get('window');
-  const navigation = useNavigation();
-  const [actualLocation, setActualLocation] = useState({});
-  const user = infoUser.user[0];
   const base_info = props.route.params.base_info;
+  const { height } = Dimensions.get('window');
+  const navigation = useNavigation();
+  const user = infoUser.user[0];
   const id_bike = props.route.params.id_bike;
+  const [actualLocation, setActualLocation] = useState({
+    latitude: base_info.latitude,
+    longitude: base_info.longitude,
+  });
+  const [markers, setMarkers] = useState([actualLocation]);
+  const [idCorrida, setIdCorrida] = useState(null);
 
   let lastTime = null;
 
+  async function startRace() {
+    let d = new Date();
+
+    let hora_inicial = `${d.getDate()}/${d.getUTCMonth() + 1}/${d.getFullYear()} ${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}`;
+    let hora_final = '';
+    let ponto_inicial_lat = base_info.latitude;
+    let ponto_inicial_long = base_info.longitude;
+    let ponto_final_lat = 0.00;
+    let ponto_final_long = 0.00;
+    let id_user = user.id;
+
+    console.log(`DATA: ${d.getDate()}/${d.getUTCMonth() + 1}/${d.getFullYear()} ${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}`)
+
+    await api.post('/corrida', {
+      hora_inicial: hora_inicial,
+      hora_final: hora_final,
+      ponto_inicial_lat: ponto_inicial_lat,
+      ponto_inicial_long: ponto_inicial_long,
+      ponto_final_lat: ponto_final_lat,
+      ponto_final_long: ponto_final_long,
+      id_bike: id_bike,
+      id_user: id_user,
+    }, {
+      headers: {
+        Authorization: `Bearer ${infoUser.token}`,
+      }
+    });
+
+    const { data } = await api.get(`/corrida/user/${user.id}`, {
+      headers: {
+        Authorization: `Bearer ${infoUser.token}`,
+      }
+    })
+
+    let travels = data.corridas;
+
+    travels.map((item) => {
+      if (item.hora_inicial == hora_inicial && item.hora_final == hora_final && item.ponto_inicial_lat == ponto_inicial_lat && item.ponto_inicial_long == ponto_inicial_long && item.ponto_final_lat == ponto_final_lat && item.ponto_final_long == ponto_final_long && item.id_bike == id_bike && item.id_user == id_user) {
+        setIdCorrida(item.id)
+      }
+    });
+  }
+
   useEffect(() => {
+    startRace();
     setRunning(true);
   }, []);
 
-  // async function getLocation() {
-  //   // setRunning(true);
-
-  //   let { status } = await Location.requestForegroundPermissionsAsync();
-  //   if (status !== 'granted') {
-  //     return;
-  //   } else {
-  //     await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
-  //       accuracy: Location.Accuracy.Balanced,
-  //       timeInterval: 1000,
-  //       distanceInterval: 0,
-  //       foregroundService: {
-  //         notificationTitle: 'Olá',
-  //         notificationBody: 'Você está sendo rastreado',
-  //         notificationColor: '#eee'
-  //       }
-  //     })
-  //   }
-  // }
+  async function getLocation() {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== 'granted') {
+      return;
+    } else {
+      await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
+        accuracy: Location.Accuracy.Highest,
+        timeInterval: 2000,
+        distanceInterval: 0,
+      })
+    }
+  }
 
   async function finishRun() {
     setLoading(true);
-
     setRunning(false);
-    console.log(`RUNNING: ${running}`)
+    
+    let d = new Date();
+
+    await Location.stopLocationUpdatesAsync(LOCATION_TASK_NAME);
+
     setIsStopwatchStart(false);
     let hoursTraveled = parseInt(lastTime[1]);
     let minutesTraveled = parseInt(lastTime.slice(3, 5));
     let travelCost = Math.ceil((hoursTraveled / 60 + minutesTraveled) / 30);
-    console.log(`TRAVEL COST: ${travelCost}`);
 
     firebase.database().ref(id_bike).update({
       Bloqueado: true,
     })
 
-    console.log(`USER: ${JSON.stringify(user)}`)
+    console.log('UPDATE CORRIDA REQUEST')
+
+    console.log(`ID CORRIDA: ${idCorrida}`)
+
+    await api.put(`/corrida/update/${idCorrida}`, {
+      hora_final: `${d.getDate()}/${d.getUTCMonth() + 1}/${d.getFullYear()} ${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}`,
+      ponto_final_lat: markers[markers.length - 1].latitude,
+      ponto_final_long: markers[markers.length - 1].longitude,
+    }, {
+      headers: {
+        Authorization: `Bearer ${infoUser.token}`,
+      }
+    });
+
+    console.log('POINT REQUEST')
+
+    markers.map(async (item) => {
+      await api.post('/point', {
+        latitude: item.latitude,
+        longitude: item.longitude,
+        id_corrida: idCorrida,
+      }, {
+        headers: {
+          Authorization: `Bearer ${infoUser.token}`,
+        }
+      })
+    });
+
+    console.log('LOGIN REQUEST')
 
     await api.put(`/user/update_cash/${user.id}`, {
       cash: user.cash - travelCost,
@@ -89,16 +160,12 @@ export default function Running(props) {
       }
     });
 
-    console.log('PASSOU NO UPDATE')
-
     const responseLogin = await api.post('/login', {
       email: user.email,
       senha: infoUser.password,
     });
 
     login(responseLogin.data.token, responseLogin.data.user, infoUser.password);
-
-    console.log('PASSOU PELO LOGIN');
 
     Alert.alert(
       'Corrida concluída',
@@ -121,16 +188,18 @@ export default function Running(props) {
     );
   }
 
-  // TaskManager.defineTask(LOCATION_TASK_NAME, ({ data, error }) => {
-  //   if (error) {
-  //     return;
-  //   }
+  TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
+    if (error) {
+      return;
+    }
   
-  //   if (data) {
-  //     const { location } = data;
-  //     setActualLocation(location[0].coords);
-  //   }
-  // })
+    if (data) {
+      const { locations } = data;
+      setMarkers((result) => [...result, locations[0].coords]);
+      setActualLocation(locations[0].coords);
+      console.log(`LOCATION NO TASK MANAGER: ${JSON.stringify(data.locations[0].coords)}`)
+    }
+  })
 
   return (
     <View style={styles.container}>
@@ -151,9 +220,9 @@ export default function Running(props) {
       >
         <MapView
           provider={PROVIDER_GOOGLE}
-          // onMapReady={() => {
-          //   getLocation();
-          // }}
+          onMapReady={() => {
+            getLocation();
+          }}
           initialRegion={{
             latitude: base_info.latitude,
             longitude: base_info.longitude,
@@ -163,22 +232,26 @@ export default function Running(props) {
           zoomEnabled={true}
           style={styles.map}
         >
-          {/* terminar e testar "Traçando rota " */}
-          <MapViewDirections 
-            origin={
-              { 
-                latitude: base_info.latitude,
-                longitude: base_info.longitude
-              }
-            } 
-            destination={actualLocation} 
-          />
           <Marker
             coordinate={{
-              latitude: base_info.latitude,
-              longitude: base_info.longitude,
+              latitude: actualLocation.latitude,
+              longitude: actualLocation.longitude,
             }}
             pinColor="#4B96F3"
+          />
+
+          <Polyline 
+            coordinates={markers}
+            strokeColor="#000"
+            strokeColors={[
+              '#7F0000',
+              '#00000000',
+              '#B24112',
+              '#E5845C',
+              '#238C23',
+              '#7F0000'
+            ]}
+            strokeWidth={6}
           />
         </MapView>
       </View>

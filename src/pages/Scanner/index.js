@@ -1,8 +1,9 @@
 import React from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { Image, Text, TouchableOpacity, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 import styles from './style';
+import imageScan from '../../assets/imagens/scan-smartphone.png';
 
 export default function Scanner() {
   const navigation = useNavigation();
@@ -10,7 +11,7 @@ export default function Scanner() {
   return (
     <View style={styles.container}>
       <View style={styles.orientations}>
-        {/* colocar uma ilustração */}
+        <Image source={imageScan} style={{ height: 250, width: 200, marginBottom: 20 }} />
 
         <Text style={styles.labelOrientations}>
           Para prosseguir, leia o QR Code da bike.
