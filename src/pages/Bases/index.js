@@ -87,7 +87,14 @@ export default function Bases({ route }) {
           >
             <MarkerMap iconName="pin-drop" />
 
-            <Callout>
+            <Callout
+              onPress={() => {
+                navigation.navigate('DetailsBase', {
+                  vaga: base,
+                  localidade: location,
+                });
+              }}
+            >
               <View style={styles.callout}>
                 <Text style={styles.vagaName}>{base.description}</Text>
                 <Text>Ver detalhes</Text>
