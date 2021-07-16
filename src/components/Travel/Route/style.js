@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
   },
 
   appBar: {
-    height: (height * 15) / 100,
+    height: (height * 10) / 100,
     width: width,
     alignItems: 'center',
     justifyContent: 'center',
@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
   },
 
   body: {
-    height: (height * 85) / 100,
+    height: (height * 90) / 100,
     width: width,
     alignItems: 'center',
     justifyContent: 'center'

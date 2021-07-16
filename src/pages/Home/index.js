@@ -1,6 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import {
-  ActivityIndicator,
   ImageBackground,
   ScrollView,
   View,
@@ -9,7 +8,6 @@ import {
 } from 'react-native';
 import { FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
-// import { Picker } from '@react-native-picker/picker';
 import { Picker } from '@react-native-community/picker';
 import { Context } from '../../context';
 import api from '../../utils/api';
@@ -25,25 +23,28 @@ export default function Home() {
   const [localidades, setLocalidades] = useState([]);
   const [location, setLocation] = useState({});
   const [loading, setLoading] = useState(true);
+  
+  useFocusEffect(
+    useCallback(() => {
+      const getLocalidades = async () => {
+        setLoading(true);
+        const response = await api.get('/localidade', {
+          headers: {
+            Authorization: `Bearer ${infoUser.token}`,
+          },
+        });
 
-  async function getLocalidades() {
-    setLoading(true);
-    const response = await api.get('/localidade', {
-      headers: {
-        Authorization: `Bearer ${infoUser.token}`,
-      },
-    });
+        setLocalidades(response.data.localidades);
+        let location = response.data.localidades[0];
+        setLocation(location);
+        setLoading(false);
+      }
 
-    setLocalidades(response.data.localidades);
-    let location = response.data.localidades[0];
-    setLocation(location);
-    setLoading(false);
-  }
+      getLocalidades();
 
-  useEffect(() => {
-    getLocalidades();
-    console.log(infoUser)
-  }, []);
+      return () => localidades;
+    }, []),
+  );
 
   if (loading) {
     return (

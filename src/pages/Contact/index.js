@@ -23,7 +23,7 @@ export default function Contact() {
       <View style={styles.content}>
         <View style={styles.contentHeader}>
           <Text style={[styles.heading1, { marginBottom: 10 }]}>Suporte técnico</Text>
-          <Text style={styles.heading2}>Equipe e Deyvid Chaves</Text>
+          <Text style={styles.heading2}>Deyvid Chaves</Text>
         </View>
 
         <View style={styles.bodyContent}>

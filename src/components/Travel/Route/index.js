@@ -50,7 +50,7 @@ export default function RouteTravel({ route }) {
   return (
     <View style={styles.container}>
       <View style={styles.appBar}>
-        <Text style={styles.heading}>Trajeto</Text>
+        <Text style={styles.heading}>TRAJETO</Text>
       </View>
 
       <MapView 

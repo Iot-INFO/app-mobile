@@ -111,9 +111,10 @@ export default function Running(props) {
     await Location.stopLocationUpdatesAsync(LOCATION_TASK_NAME);
 
     setIsStopwatchStart(false);
-    let hoursTraveled = parseInt(lastTime[1]);
+    let hoursTraveled = parseInt(lastTime.slice(0, 2));
     let minutesTraveled = parseInt(lastTime.slice(3, 5));
-    let travelCost = Math.ceil((hoursTraveled / 60 + minutesTraveled) / 30);
+    let secondsTraveled = parseInt(lastTime.slice(6, 8));
+    let travelCost = Math.ceil((hoursTraveled * 60 + minutesTraveled + secondsTraveled / 100) / 30);
 
     firebase.database().ref(id_bike).update({
       Bloqueado: true,
