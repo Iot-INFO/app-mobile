@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "moobi-verde",
+    "name": "Moobi Verde",
     "slug": "moobi-verde",
     "version": "0.0.1",
     "orientation": "portrait",
@@ -22,7 +22,7 @@
     },
     "android": {
       "package": "com.tomoove.moobiverde",
-      "enableDangerousExperimentalLeanBuilds": true,
+      "enableDangerousExperimentalLeanBuilds": false,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
@@ -35,7 +35,8 @@
       "permissions": [
         "ACCESS_COARSE_LOCATION",
         "ACCESS_FINE_LOCATION",
-        "ACCESS_BACKGROUND_LOCATION"
+        "ACCESS_BACKGROUND_LOCATION",
+        "CAMERA"
       ]
     },
     "web": {
