@@ -23,10 +23,6 @@
     "android": {
       "package": "com.tomoove.moobiverde",
       "enableDangerousExperimentalLeanBuilds": false,
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
-      },
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyBv7PYOI-lImKiDx3D-1eEAUL-B15wS4Bw"

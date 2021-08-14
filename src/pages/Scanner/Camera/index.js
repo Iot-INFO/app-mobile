@@ -134,25 +134,15 @@ export default function Camera() {
     }
   }
 
-  if (hasPermission == false) {
-    return Alert.alert(
-      'Permissão',
-      'Por favor, precisamos que habilite a utilização da câmera.',
-      [
-        {
-          text: 'Cancelar',
-          onPress: () => navigation.goBack(),
-        },
-
-        {
-          text: 'OK',
-          onPress: () => getPermissions(),
-        },
-      ]
-    );
+  if (hasPermission == null) {
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: 'white' }}>
+        <ActivityIndicator />
+      </View>
+    )
   }
   if (hasPermission === false) {
-    return <Text>No access to camera</Text>;
+    navigation.goBack();
   }
 
   return (

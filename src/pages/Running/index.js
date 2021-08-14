@@ -96,7 +96,7 @@ export default function Running(props) {
     } else {
       await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
         accuracy: Location.Accuracy.Highest,
-        timeInterval: 2000,
+        timeInterval: 5000,
         distanceInterval: 0,
       })
     }

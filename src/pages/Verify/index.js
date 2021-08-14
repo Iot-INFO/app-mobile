@@ -15,6 +15,7 @@ export default function Verify() {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
+        backgroundColor: 'white'
       }}
     >
       <ActivityIndicator size="large" color="#68B92C" />

@@ -15,6 +15,15 @@ export default function RouteTravel({ route }) {
   async function getPoints() {
     setMarkers([]);
 
+    setMarkers(
+      [
+        { 
+          latitude: route.params.corrida.ponto_inicial_lat,
+          longitude: route.params.corrida.ponto_inicial_long,
+        }
+      ]
+    )
+
     setLoading(true);
 
     const { data } = await api.get(`point/corrida/${route.params.corrida.id}`, {
@@ -31,6 +40,11 @@ export default function RouteTravel({ route }) {
         longitude: item.longitude,
       }]);
     });
+
+    setMarkers((result) => [...result, {
+      latitude: route.params.corrida.ponto_final_lat,
+      longitude: route.params.corrida.ponto_final_long,
+    }])
 
     setLoading(false);
   }
@@ -63,7 +77,7 @@ export default function RouteTravel({ route }) {
         }}
         style={styles.body}
       >
-        <Marker coordinate={points[0]} />
+        <Marker coordinate={markers[0]} />
           <Polyline
             coordinates={markers}
             strokeColor="#000"
@@ -77,7 +91,7 @@ export default function RouteTravel({ route }) {
             ]}
             strokeWidth={4}
           />
-        <Marker coordinate={points[points.length - 1]} />
+        <Marker coordinate={markers[markers.length - 1]} />
       </MapView>
     </View>
   )

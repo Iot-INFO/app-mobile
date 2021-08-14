@@ -61,7 +61,7 @@ export default function Travels() {
         />
         <Text style={styles.appBarTitle}>Minhas viagens</Text>
       </View>
-      { travels == [] || travels == null ? (
+      { travels == [] ? (
         <View style={styles.contentContainer}>
           <View style={styles.noTravelsContainer}>
             <Image source={EmptyTravels} />
